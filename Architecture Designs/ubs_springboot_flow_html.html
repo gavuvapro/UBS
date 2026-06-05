@@ -1,0 +1,212 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.wrap{padding:1.5rem 1rem}
+.section-label{font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--color-text-tertiary);text-transform:uppercase;text-align:center;margin-bottom:8px}
+.layer{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 16px;margin-bottom:4px;background:var(--color-background-primary)}
+.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.node{border-radius:var(--border-radius-md);padding:8px 12px;font-size:13px;font-weight:500;cursor:pointer;border:0.5px solid;text-align:center;flex:1;min-width:90px;max-width:160px;transition:opacity .15s}
+.node:hover{opacity:.8}
+.node-title{font-size:13px;font-weight:500;line-height:1.3}
+.node-sub{font-size:11px;font-weight:400;margin-top:3px;line-height:1.4}
+.blue{background:#E6F1FB;border-color:#185FA5;color:#0C447C}
+.blue .node-sub{color:#185FA5}
+.purple{background:#EEEDFE;border-color:#534AB7;color:#3C3489}
+.purple .node-sub{color:#534AB7}
+.teal{background:#E1F5EE;border-color:#0F6E56;color:#085041}
+.teal .node-sub{color:#0F6E56}
+.coral{background:#FAECE7;border-color:#993C1D;color:#712B13}
+.coral .node-sub{color:#993C1D}
+.amber{background:#FAEEDA;border-color:#854F0B;color:#633806}
+.amber .node-sub{color:#854F0B}
+.green{background:#EAF3DE;border-color:#3B6D11;color:#27500A}
+.green .node-sub{color:#3B6D11}
+.red{background:#FCEBEB;border-color:#A32D2D;color:#791F1F}
+.red .node-sub{color:#A32D2D}
+.gray{background:var(--color-background-secondary);border-color:var(--color-border-secondary);color:var(--color-text-primary)}
+.gray .node-sub{color:var(--color-text-secondary)}
+.arrow-down{display:flex;justify-content:center;align-items:center;height:28px;color:var(--color-text-tertiary);font-size:18px;line-height:1}
+.arrow-label{font-size:11px;color:var(--color-text-tertiary);margin-left:4px;font-style:italic}
+.decision{display:flex;justify-content:center;margin-bottom:4px}
+.diamond{width:120px;padding:8px 12px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:12px;font-weight:500;color:var(--color-text-secondary);text-align:center}
+.branch-row{display:flex;gap:12px;justify-content:center;margin-bottom:4px}
+.branch-arrow{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--color-text-tertiary)}
+.full-node{border-radius:var(--border-radius-md);padding:10px 16px;font-size:13px;font-weight:500;border:0.5px solid;width:100%;text-align:center}
+.section-divider{border-top:0.5px dashed var(--color-border-tertiary);margin:10px 0}
+.legend{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary)}
+.legend-dot{width:10px;height:10px;border-radius:3px;border:0.5px solid}
+</style>
+<div class="wrap">
+
+<div class="section-label">Client layer</div>
+<div class="layer" style="text-align:center">
+  <div class="node gray" style="display:inline-block;max-width:300px;width:100%" onclick="sendPrompt('What HTTP clients can test the UBS API?')">
+    <div class="node-title"><i class="ti ti-terminal-2" style="font-size:15px;vertical-align:-2px;margin-right:5px" aria-hidden="true"></i>HTTP client</div>
+    <div class="node-sub">Postman / Swagger UI</div>
+  </div>
+</div>
+
+<div class="arrow-down">↓ <span class="arrow-label">HTTPS request</span></div>
+
+<div class="section-label">Security layer</div>
+<div class="layer">
+  <div class="full-node coral" onclick="sendPrompt('How does JwtAuthenticationFilter work in Spring Boot?')" style="cursor:pointer">
+    <div class="node-title"><i class="ti ti-lock" style="font-size:15px;vertical-align:-2px;margin-right:5px" aria-hidden="true"></i>Spring Security filter chain</div>
+    <div class="node-sub" style="margin-top:4px">JwtAuthenticationFilter → validates Bearer token → sets SecurityContext</div>
+  </div>
+  <div class="section-divider"></div>
+  <div class="decision"><div class="diamond">Valid JWT?</div></div>
+  <div class="branch-row">
+    <div class="branch-arrow">
+      <span>↙ No</span>
+      <div class="node red" style="max-width:130px" onclick="sendPrompt('What HTTP status does an invalid JWT return?')">
+        <div class="node-title">401 Unauthorized</div>
+        <div class="node-sub">Request rejected</div>
+      </div>
+    </div>
+    <div class="branch-arrow">
+      <span>↓ Yes</span>
+      <div class="node green" style="max-width:130px">
+        <div class="node-title">Role check passes</div>
+        <div class="node-sub">Route to controller</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down">↓</div>
+
+<div class="section-label">Controller layer — @RestController</div>
+<div class="layer">
+  <div class="row">
+    <div class="node purple" onclick="sendPrompt('What endpoints does AuthController expose?')">
+      <div class="node-title">Auth</div>
+      <div class="node-sub">signup · login</div>
+    </div>
+    <div class="node purple" onclick="sendPrompt('What does CustomerController manage?')">
+      <div class="node-title">Customer</div>
+      <div class="node-sub">CRUD · status</div>
+    </div>
+    <div class="node purple" onclick="sendPrompt('What does MeterReadingController do?')">
+      <div class="node-title">Meter / Reading</div>
+      <div class="node-sub">capture · validate</div>
+    </div>
+    <div class="node purple" onclick="sendPrompt('What does BillingController handle?')">
+      <div class="node-title">Billing</div>
+      <div class="node-sub">generate · approve</div>
+    </div>
+    <div class="node purple" onclick="sendPrompt('What does PaymentController handle?')">
+      <div class="node-title">Payment</div>
+      <div class="node-sub">record · balance</div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down">↓</div>
+
+<div class="section-label">Service layer — @Service | business logic</div>
+<div class="layer">
+  <div class="row">
+    <div class="node teal" onclick="sendPrompt('What does UserService do in the billing system?')">
+      <div class="node-title">User service</div>
+      <div class="node-sub">roles · JWT issue</div>
+    </div>
+    <div class="node teal" onclick="sendPrompt('What business rules does CustomerService enforce?')">
+      <div class="node-title">Customer service</div>
+      <div class="node-sub">dedup · status rules</div>
+    </div>
+    <div class="node teal" onclick="sendPrompt('What rules does MeterReadingService enforce?')">
+      <div class="node-title">Meter / Reading service</div>
+      <div class="node-sub">current > prev · unique/month</div>
+    </div>
+    <div class="node teal" onclick="sendPrompt('How does BillingService generate and approve bills?')">
+      <div class="node-title">Billing service</div>
+      <div class="node-sub">tariff · VAT · penalty</div>
+    </div>
+    <div class="node teal" onclick="sendPrompt('How does PaymentService handle partial payments?')">
+      <div class="node-title">Payment service</div>
+      <div class="node-sub">partial · full · balance</div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down">↓</div>
+
+<div class="section-label">Repository layer — Spring Data JPA · @Repository</div>
+<div class="layer">
+  <div class="row">
+    <div class="node blue" onclick="sendPrompt('What JPA repositories are needed for the UBS?')">
+      <div class="node-title">User repo</div>
+      <div class="node-sub">findByEmail</div>
+    </div>
+    <div class="node blue" onclick="sendPrompt('What queries does CustomerRepository need?')">
+      <div class="node-title">Customer repo</div>
+      <div class="node-sub">findByNationalId</div>
+    </div>
+    <div class="node blue" onclick="sendPrompt('What does MeterReadingRepository query?')">
+      <div class="node-title">Meter repo</div>
+      <div class="node-sub">findByMeterAndMonth</div>
+    </div>
+    <div class="node blue" onclick="sendPrompt('What does BillRepository query?')">
+      <div class="node-title">Bill repo</div>
+      <div class="node-sub">findByStatus</div>
+    </div>
+    <div class="node blue" onclick="sendPrompt('What does PaymentRepository query?')">
+      <div class="node-title">Payment repo</div>
+      <div class="node-sub">findByBillRef</div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down">↓</div>
+
+<div class="section-label">Persistence layer</div>
+<div class="layer">
+  <div class="full-node amber" onclick="sendPrompt('What tables, triggers, and stored procedures are needed?')" style="cursor:pointer">
+    <div class="node-title"><i class="ti ti-database" style="font-size:15px;vertical-align:-2px;margin-right:5px" aria-hidden="true"></i>PostgreSQL / MySQL database</div>
+    <div class="node-sub" style="margin-top:4px">Tables · Triggers · Stored procedures · Cursors</div>
+  </div>
+  <div class="section-divider"></div>
+  <div class="row" style="gap:10px">
+    <div class="node amber" style="max-width:220px" onclick="sendPrompt('What DB trigger fires on bill generation?')">
+      <div class="node-title">Trigger: bill generated</div>
+      <div class="node-sub">INSERT notification record</div>
+    </div>
+    <div class="node amber" style="max-width:220px" onclick="sendPrompt('What DB trigger fires on full payment?')">
+      <div class="node-title">Trigger: full payment</div>
+      <div class="node-sub">UPDATE status → PAID + notify</div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down">↓</div>
+
+<div class="section-label">Notification layer</div>
+<div class="layer">
+  <div class="full-node green" onclick="sendPrompt('What does the notification message look like for the billing system?')" style="cursor:pointer">
+    <div class="node-title"><i class="ti ti-bell" style="font-size:15px;vertical-align:-2px;margin-right:5px" aria-hidden="true"></i>Messaging service</div>
+    <div class="node-sub" style="margin-top:4px">"Dear &lt;CustomerName&gt;, your &lt;Month/Year&gt; bill of &lt;Amount&gt; FRW has been successfully processed."</div>
+  </div>
+</div>
+
+<div class="arrow-down">↓ <span class="arrow-label">JSON response</span></div>
+
+<div class="layer" style="text-align:center">
+  <div class="node gray" style="display:inline-block;max-width:280px;width:100%">
+    <div class="node-title">HTTP response → client</div>
+    <div class="node-sub">200 OK · 400 Bad Request · 401 · 403</div>
+  </div>
+</div>
+
+<div class="section-divider" style="margin-top:16px"></div>
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#FAECE7;border-color:#993C1D"></div>Security</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#EEEDFE;border-color:#534AB7"></div>Controller</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#E1F5EE;border-color:#0F6E56"></div>Service</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#E6F1FB;border-color:#185FA5"></div>Repository</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#FAEEDA;border-color:#854F0B"></div>Database</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#EAF3DE;border-color:#3B6D11"></div>Notification</div>
+</div>
+</div>

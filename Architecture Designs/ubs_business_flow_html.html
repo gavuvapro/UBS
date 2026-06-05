@@ -1,0 +1,183 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.bwrap{padding:1rem;font-family:var(--font-sans)}
+.col-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.col-head{text-align:center;margin-bottom:10px}
+.col-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.col-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.col-body{display:flex;flex-direction:column;align-items:center;gap:4px}
+.bnode{border-radius:var(--border-radius-md);padding:8px 10px;font-size:12px;font-weight:500;border:0.5px solid;width:100%;text-align:center;cursor:pointer;transition:opacity .15s}
+.bnode:hover{opacity:.8}
+.bsub{font-size:10px;font-weight:400;margin-top:3px;line-height:1.4}
+.blue{background:#E6F1FB;border-color:#185FA5;color:#0C447C}.blue .bsub{color:#185FA5}
+.coral{background:#FAECE7;border-color:#993C1D;color:#712B13}.coral .bsub{color:#993C1D}
+.teal{background:#E1F5EE;border-color:#0F6E56;color:#085041}.teal .bsub{color:#0F6E56}
+.amber{background:#FAEEDA;border-color:#854F0B;color:#633806}.amber .bsub{color:#854F0B}
+.green{background:#EAF3DE;border-color:#3B6D11;color:#27500A}.green .bsub{color:#3B6D11}
+.pink{background:#FBEAF0;border-color:#993556;color:#72243E}.pink .bsub{color:#993556}
+.red{background:#FCEBEB;border-color:#A32D2D;color:#791F1F}.red .bsub{color:#A32D2D}
+.gray{background:var(--color-background-secondary);border-color:var(--color-border-secondary);color:var(--color-text-primary)}.gray .bsub{color:var(--color-text-secondary)}
+.barrow{font-size:16px;color:var(--color-text-tertiary);line-height:1}
+.blabel{font-size:10px;color:var(--color-text-tertiary);font-style:italic;text-align:center}
+.diamond-wrap{display:flex;flex-direction:column;align-items:center;width:100%}
+.diamond{padding:6px 10px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:11px;font-weight:500;color:var(--color-text-secondary);text-align:center;width:100%}
+.branch{display:flex;gap:6px;width:100%;justify-content:center}
+.branch-arm{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.branch-label{font-size:10px;color:var(--color-text-tertiary)}
+.col-divider{border-top:0.5px dashed var(--color-border-tertiary);width:100%;margin:4px 0}
+.cross-arrow{display:flex;align-items:center;justify-content:center;gap:4px;font-size:10px;color:var(--color-text-tertiary);margin:2px 0}
+</style>
+<div class="bwrap">
+<div class="col-grid">
+
+  <!-- COL 1: Meter Reading -->
+  <div>
+    <div class="col-head">
+      <div class="col-title"><i class="ti ti-gauge" style="font-size:14px;vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>Meter reading</div>
+      <div class="col-sub">ROLE_OPERATOR</div>
+    </div>
+    <div class="col-body">
+      <div class="bnode blue" onclick="sendPrompt('How does an operator capture a meter reading in the UBS?')">
+        Operator submits reading
+        <div class="bsub">meter · prev · current · date</div>
+      </div>
+      <div class="barrow">↓</div>
+      <div class="bnode coral" onclick="sendPrompt('What business rules validate a meter reading?')">
+        Validate reading
+        <div class="bsub">Current &gt; Previous · active meter · unique month/year</div>
+      </div>
+      <div class="barrow">↓</div>
+      <div class="diamond-wrap">
+        <div class="diamond">Valid?</div>
+        <div class="branch" style="margin-top:4px">
+          <div class="branch-arm">
+            <span class="branch-label">↙ No</span>
+            <div class="bnode red" onclick="sendPrompt('What error is returned for an invalid meter reading?')">
+              400 error
+              <div class="bsub">rejected</div>
+            </div>
+          </div>
+          <div class="branch-arm">
+            <span class="branch-label">↓ Yes</span>
+            <div class="bnode teal" onclick="sendPrompt('How is a meter reading saved to the database?')">
+              Save entity
+              <div class="bsub">MeterReading persisted</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="barrow">↓</div>
+      <div class="bnode teal" onclick="sendPrompt('How is consumption calculated from meter readings?')">
+        Compute consumption
+        <div class="bsub">Current − Previous = units used</div>
+      </div>
+      <div class="cross-arrow">→ feeds bill generation</div>
+    </div>
+  </div>
+
+  <!-- COL 2: Bill Generation -->
+  <div>
+    <div class="col-head">
+      <div class="col-title"><i class="ti ti-file-invoice" style="font-size:14px;vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>Bill generation</div>
+      <div class="col-sub">ROLE_ADMIN / scheduler</div>
+    </div>
+    <div class="col-body">
+      <div class="bnode blue" onclick="sendPrompt('When and how are bills triggered in the billing system?')">
+        Trigger bill generation
+        <div class="bsub">per meter per month</div>
+      </div>
+      <div class="barrow">↓</div>
+      <div class="bnode coral" onclick="sendPrompt('How does the tariff get applied when generating a bill?')">
+        Apply tariff + tax
+        <div class="bsub">consumption × rate + VAT + service charge</div>
+      </div>
+      <div class="barrow">↓</div>
+      <div class="bnode teal" onclick="sendPrompt('What does it mean for a bill to be approved by admin?')">
+        Admin approves bill
+        <div class="bsub">PENDING → APPROVED</div>
+      </div>
+      <div class="barrow">↓</div>
+      <div class="bnode amber" onclick="sendPrompt('What database trigger fires when a bill is generated?')">
+        DB trigger fires
+        <div class="bsub">INSERT notification record</div>
+      </div>
+      <div class="barrow">↓</div>
+      <div class="bnode green" onclick="sendPrompt('What does the bill notification message look like?')">
+        Send notification
+        <div class="bsub">"Dear X, bill of Y FRW processed"</div>
+      </div>
+      <div class="col-divider"></div>
+      <div class="bnode pink" onclick="sendPrompt('How is a late payment penalty calculated and applied?')">
+        Late penalty scheduler
+        <div class="bsub">applies penalty if overdue</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COL 3: Payment -->
+  <div>
+    <div class="col-head">
+      <div class="col-title"><i class="ti ti-credit-card" style="font-size:14px;vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>Payment processing</div>
+      <div class="col-sub">ROLE_FINANCE / ROLE_CUSTOMER</div>
+    </div>
+    <div class="col-body">
+      <div class="bnode blue" onclick="sendPrompt('How does a customer make a payment in the system?')">
+        Record payment
+        <div class="bsub">bill ref · amount · method · date</div>
+      </div>
+      <div class="barrow">↓</div>
+      <div class="bnode coral" onclick="sendPrompt('How are partial payments handled in the billing system?')">
+        Validate payment
+        <div class="bsub">bill exists · amount &gt; 0</div>
+      </div>
+      <div class="barrow">↓</div>
+      <div class="bnode teal" onclick="sendPrompt('How is the outstanding balance updated after a payment?')">
+        Update outstanding balance
+        <div class="bsub">balance − amount paid</div>
+      </div>
+      <div class="barrow">↓</div>
+      <div class="diamond-wrap">
+        <div class="diamond">Balance = 0?</div>
+        <div class="branch" style="margin-top:4px">
+          <div class="branch-arm">
+            <span class="branch-label">↙ No</span>
+            <div class="bnode gray" onclick="sendPrompt('What happens with a partial payment?')">
+              PARTIAL
+              <div class="bsub">balance updated</div>
+            </div>
+          </div>
+          <div class="branch-arm">
+            <span class="branch-label">↓ Yes</span>
+            <div class="bnode green" onclick="sendPrompt('What happens when a bill is fully paid?')">
+              PAID
+              <div class="bsub">status updated</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="barrow">↓</div>
+      <div class="bnode amber" onclick="sendPrompt('What DB trigger fires on full payment?')">
+        DB trigger fires
+        <div class="bsub">UPDATE status + notify customer</div>
+      </div>
+      <div class="barrow">↓</div>
+      <div class="bnode green" onclick="sendPrompt('What notification is sent when a bill is fully paid?')">
+        Send payment notification
+        <div class="bsub">"Your bill has been cleared"</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Legend -->
+<div style="border-top:0.5px dashed var(--color-border-tertiary);margin-top:16px;padding-top:10px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+  <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary)"><div style="width:10px;height:10px;border-radius:3px;background:#E6F1FB;border:0.5px solid #185FA5"></div>Input</div>
+  <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary)"><div style="width:10px;height:10px;border-radius:3px;background:#FAECE7;border:0.5px solid #993C1D"></div>Validate</div>
+  <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary)"><div style="width:10px;height:10px;border-radius:3px;background:#E1F5EE;border:0.5px solid #0F6E56"></div>Save / update</div>
+  <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary)"><div style="width:10px;height:10px;border-radius:3px;background:#FAEEDA;border:0.5px solid #854F0B"></div>DB trigger</div>
+  <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary)"><div style="width:10px;height:10px;border-radius:3px;background:#EAF3DE;border:0.5px solid #3B6D11"></div>Notify</div>
+  <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary)"><div style="width:10px;height:10px;border-radius:3px;background:#FBEAF0;border:0.5px solid #993556"></div>Scheduler</div>
+</div>
+</div>

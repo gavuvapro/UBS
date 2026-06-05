@@ -1,0 +1,146 @@
+
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Entity Relationship Diagram — identity, users, customers, meters and configuration tables</h2>
+<style>
+#erd1 { width:100%; overflow-x:auto; }
+#erd1 svg { max-width:100%; }
+#erd1 svg.erDiagram .divider path { stroke-opacity:0.4; }
+#erd1 svg.erDiagram .row-rect-odd path,
+#erd1 svg.erDiagram .row-rect-odd rect,
+#erd1 svg.erDiagram .row-rect-even path,
+#erd1 svg.erDiagram .row-rect-even rect { stroke:none !important; }
+</style>
+<div style="padding:1rem 0 0.5rem; font-size:13px; font-weight:500; color:var(--color-text-secondary);">Identity, customers &amp; configuration</div>
+<div id="erd1"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '13px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+    primaryColor: dark ? '#1a2744' : '#E6F1FB',
+    primaryBorderColor: dark ? '#378ADD' : '#185FA5',
+    primaryTextColor: dark ? '#B5D4F4' : '#0C447C',
+    attributeBackgroundColorOdd: dark ? '#1e1e1c' : '#f8f7f4',
+    attributeBackgroundColorEven: dark ? '#252523' : '#ffffff',
+  },
+});
+const diagram = `erDiagram
+  app_user {
+    uuid id PK
+    varchar full_names
+    varchar email UK
+    varchar phone_number
+    varchar password_hash
+    varchar status
+    timestamp created_at
+    timestamp updated_at
+  }
+  role {
+    uuid id PK
+    varchar name UK
+  }
+  user_roles {
+    uuid user_id FK
+    uuid role_id FK
+  }
+  customer {
+    uuid id PK
+    varchar full_names
+    varchar national_id UK
+    varchar email
+    varchar phone_number
+    text address
+    varchar status
+    uuid user_id FK
+    timestamp created_at
+    timestamp updated_at
+  }
+  meter {
+    uuid id PK
+    varchar meter_number UK
+    varchar meter_type
+    date installation_date
+    varchar status
+    uuid customer_id FK
+    timestamp created_at
+  }
+  tariff {
+    uuid id PK
+    varchar meter_type
+    varchar tariff_type
+    numeric unit_price
+    date effective_date
+    int version
+    varchar status
+    text description
+  }
+  tariff_tier {
+    uuid id PK
+    uuid tariff_id FK
+    numeric min_units
+    numeric max_units
+    numeric price_per_unit
+  }
+  service_charge {
+    uuid id PK
+    varchar name
+    numeric amount
+    varchar meter_type
+    date effective_date
+    varchar status
+  }
+  tax_config {
+    uuid id PK
+    varchar tax_name
+    numeric rate
+    date effective_date
+    varchar status
+  }
+  penalty_config {
+    uuid id PK
+    varchar penalty_type
+    numeric value
+    int grace_period_days
+    date effective_date
+    varchar status
+  }
+
+  app_user ||--o{ user_roles : "has"
+  role ||--o{ user_roles : "assigned via"
+  customer ||--o| app_user : "linked to"
+  customer ||--o{ meter : "owns"
+  tariff ||--o{ tariff_tier : "has tiers"
+`;
+const { svg } = await mermaid.render('erd1-svg', diagram);
+document.getElementById('erd1').innerHTML = svg;
+document.querySelectorAll('#erd1 svg.erDiagram .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+    if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+  }
+  firstPath.replaceWith(rect);
+});
+document.querySelectorAll('#erd1 svg.erDiagram .row-rect-odd path, #erd1 svg.erDiagram .row-rect-even path').forEach(p => {
+  p.setAttribute('stroke', 'none');
+});
+</script>
