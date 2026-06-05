@@ -37,7 +37,7 @@ public class MeterReadingService {
                 .orElseThrow(() -> new ResourceNotFoundException("Meter", "id", request.meterId()));
 
         if (meter.getStatus() != Meter.MeterStatus.ACTIVE) {
-            throw new BusinessRuleException("Meter is not active. Readings can only be captured for active meters.");
+            throw new BusinessRuleException("Meter is not active.  bReadings can onlye captured for active meters.");
         }
 
         if (meterReadingRepository.existsByMeterIdAndReadingMonthAndReadingYear(

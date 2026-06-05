@@ -116,6 +116,42 @@ public class DataInitializer implements CommandLineRunner {
             appUserRepository.save(admin);
         }
 
+        // Seed operator user
+        if (!appUserRepository.existsByEmail("operator@wasac.rw")) {
+            AppUser operator = new AppUser();
+            operator.setFullNames("Operator User");
+            operator.setEmail("operator@wasac.rw");
+            operator.setPhoneNumber("+250700000002");
+            operator.setPassword(passwordEncoder.encode("Operator123"));
+            operator.setStatus(AppUser.UserStatus.ACTIVE);
+            operator.setRoles(Set.of(operatorRole));
+            appUserRepository.save(operator);
+        }
+
+        // Seed finance user
+        if (!appUserRepository.existsByEmail("finance@wasac.rw")) {
+            AppUser finance = new AppUser();
+            finance.setFullNames("Finance User");
+            finance.setEmail("finance@wasac.rw");
+            finance.setPhoneNumber("+250700000003");
+            finance.setPassword(passwordEncoder.encode("Finance123"));
+            finance.setStatus(AppUser.UserStatus.ACTIVE);
+            finance.setRoles(Set.of(financeRole));
+            appUserRepository.save(finance);
+        }
+
+        // Seed customer user
+        if (!appUserRepository.existsByEmail("customer@wasac.rw")) {
+            AppUser customer = new AppUser();
+            customer.setFullNames("Customer User");
+            customer.setEmail("customer@wasac.rw");
+            customer.setPhoneNumber("+250700000004");
+            customer.setPassword(passwordEncoder.encode("Customer123"));
+            customer.setStatus(AppUser.UserStatus.ACTIVE);
+            customer.setRoles(Set.of(customerRole));
+            appUserRepository.save(customer);
+        }
+
         // Seed additional test data (10 records per table)
         seedTestData();
     }
